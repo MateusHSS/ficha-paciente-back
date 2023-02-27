@@ -19,6 +19,12 @@ public class EspecialidadeModel {
   @Column(nullable = false, length = 50)
   private String nome;
 
+  public EspecialidadeModel(String nome) {
+    this.nome = nome;
+  }
+
+  public EspecialidadeModel() {}
+
   public UUID getId() {
     return id;
   }

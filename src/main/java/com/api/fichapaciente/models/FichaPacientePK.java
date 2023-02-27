@@ -2,20 +2,35 @@ package com.api.fichapaciente.models;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Embeddable
 public class FichaPacientePK implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @Column(nullable = false, length = 20)
   private String numeroCarteiraPlano;
 
-  private UUID idEspecialidade;
+  @ManyToOne
+  @JoinColumn(name = "id_especialidade")
+  private EspecialidadeModel especialidade;
 
-  private UUID idPlanoSaude;
+  @ManyToOne
+  @JoinColumn(name = "id_plano_saude")
+  private PlanoDeSaudeModel planoSaude;
+
+  public FichaPacientePK(String numeroCarteiraPlano, EspecialidadeModel especialidade, PlanoDeSaudeModel planoSaude) {
+    this.numeroCarteiraPlano = numeroCarteiraPlano;
+    this.especialidade = especialidade;
+    this.planoSaude = planoSaude;
+  }
+
+  public FichaPacientePK() {}
   
   public String getNumeroCarteiraPlano() {
     return numeroCarteiraPlano;
@@ -25,20 +40,20 @@ public class FichaPacientePK implements Serializable {
     this.numeroCarteiraPlano = numeroCarteiraPlano;
   }
 
-  public UUID getIdEspecialidade() {
-    return idEspecialidade;
+  public EspecialidadeModel getEspecialidade() {
+    return especialidade;
   }
 
-  public void setIdEspecialidade(UUID idEspecialidade) {
-    this.idEspecialidade = idEspecialidade;
+  public void setEspecialidade(EspecialidadeModel especialidade) {
+    this.especialidade = especialidade;
   }
 
-  public UUID getIdPlanoSaude() {
-    return idPlanoSaude;
+  public PlanoDeSaudeModel getPlanoSaude() {
+    return planoSaude;
   }
 
-  public void setIdPlanoSaude(UUID idPlanoSaude) {
-    this.idPlanoSaude = idPlanoSaude;
+  public void setPlanoSaude(PlanoDeSaudeModel planoSaude) {
+    this.planoSaude = planoSaude;
   }
 
   @Override
@@ -47,12 +62,12 @@ public class FichaPacientePK implements Serializable {
     if(obj == null || getClass() != obj.getClass()) return false;
     FichaPacientePK fichaPacientePK = (FichaPacientePK) obj;
     
-    return Objects.equals(idEspecialidade, fichaPacientePK.idEspecialidade) && Objects.equals(idPlanoSaude, fichaPacientePK.idPlanoSaude) && Objects.equals(numeroCarteiraPlano, fichaPacientePK.numeroCarteiraPlano);
+    return Objects.equals(especialidade, fichaPacientePK.especialidade) && Objects.equals(planoSaude, fichaPacientePK.planoSaude) && Objects.equals(numeroCarteiraPlano, fichaPacientePK.numeroCarteiraPlano);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idEspecialidade, idPlanoSaude, numeroCarteiraPlano);
+    return Objects.hash(especialidade, planoSaude, numeroCarteiraPlano);
   }
   
 }

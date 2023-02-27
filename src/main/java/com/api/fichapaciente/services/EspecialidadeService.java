@@ -1,6 +1,8 @@
 package com.api.fichapaciente.services;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -24,6 +26,10 @@ public class EspecialidadeService {
   @Transactional
   public EspecialidadeModel salvar(EspecialidadeModel especialidadeModel) {
     return especialidadeRepository.save(especialidadeModel);
+  }
+
+  public Optional<EspecialidadeModel> findById(UUID id) {
+    return especialidadeRepository.findById(id);
   }
 
 }

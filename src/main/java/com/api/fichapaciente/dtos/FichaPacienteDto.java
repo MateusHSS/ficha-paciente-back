@@ -3,12 +3,14 @@ package com.api.fichapaciente.dtos;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 public class FichaPacienteDto {
   
   @NotBlank
   private String nomePaciente;
   @NotBlank
+  @Size(max = 20)
   private String numeroCarteiraPlano;
   @NotBlank
   private String idEspecialidade;

@@ -16,8 +16,15 @@ public class PlanoDeSaudeModel {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
+  
   @Column(nullable = false, length = 50)
   private String nome;
+
+  public PlanoDeSaudeModel(String nome) {
+    this.nome = nome;
+  }
+
+  public PlanoDeSaudeModel() {}
 
   public UUID getId() {
     return id;

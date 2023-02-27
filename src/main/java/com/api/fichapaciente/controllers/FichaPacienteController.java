@@ -1,6 +1,7 @@
 package com.api.fichapaciente.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -14,17 +15,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.fichapaciente.dtos.FichaPacienteDto;
+import com.api.fichapaciente.models.EspecialidadeModel;
 import com.api.fichapaciente.models.FichaPacienteModel;
 import com.api.fichapaciente.models.FichaPacientePK;
+import com.api.fichapaciente.models.PlanoDeSaudeModel;
+import com.api.fichapaciente.services.EspecialidadeService;
 import com.api.fichapaciente.services.FichaPacienteService;
+import com.api.fichapaciente.services.PlanoSaudeService;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/ficha-paciente")
 public class FichaPacienteController {
   final FichaPacienteService fichaPacienteService;
-  public FichaPacienteController(FichaPacienteService fichaPacienteService) {
+  final EspecialidadeService especialidadeService;
+  final PlanoSaudeService planoSaudeService;
+
+  public FichaPacienteController(FichaPacienteService fichaPacienteService, EspecialidadeService especialidadeService, PlanoSaudeService planoSaudeService) {
     this.fichaPacienteService = fichaPacienteService;
+    this.especialidadeService = especialidadeService;
+    this.planoSaudeService = planoSaudeService;
   }
 
   @GetMapping
@@ -34,14 +44,26 @@ public class FichaPacienteController {
 
   @PostMapping
   public ResponseEntity<Object> salvarFichaPaciente(@RequestBody @Valid FichaPacienteDto fichaPacienteDto){
-    var fichaPacientePK = new FichaPacientePK();
-    fichaPacientePK.setIdEspecialidade(fichaPacienteDto.getIdEspecialidade());
-    fichaPacientePK.setIdPlanoSaude(fichaPacienteDto.getIdPlanoSaude());
-    fichaPacientePK.setNumeroCarteiraPlano(fichaPacienteDto.getNumeroCarteiraPlano());
+    Optional<EspecialidadeModel> especialidadeModelOptional = especialidadeService.findById(fichaPacienteDto.getIdEspecialidade());
 
-    var fichaPacienteModel = new FichaPacienteModel();
-    fichaPacienteModel.setId(fichaPacientePK);
-    fichaPacienteModel.setNomePaciente(fichaPacienteDto.getNomePaciente());
+    if(!especialidadeModelOptional.isPresent()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Especialidade não encontrada");
+    }
+
+    Optional<PlanoDeSaudeModel> planoSaudeModelOptional = planoSaudeService.findById(fichaPacienteDto.getIdPlanoSaude());
+
+    if(!planoSaudeModelOptional.isPresent()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plano de saúde não encontrado");
+    }
+
+    var fichaPacientePK = new FichaPacientePK(fichaPacienteDto.getNumeroCarteiraPlano(), especialidadeModelOptional.get(), planoSaudeModelOptional.get());
+    Optional<FichaPacienteModel> fichaPacienteModelOptional = fichaPacienteService.findById(fichaPacientePK);
+
+    if(fichaPacienteModelOptional.isPresent()) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).body("Já existe uma ficha para esse número de carteira para essa especialidade e plano de saúde");
+    }
+
+    var fichaPacienteModel = new FichaPacienteModel(fichaPacientePK, fichaPacienteDto.getNomePaciente());
 
     return ResponseEntity.status(HttpStatus.CREATED).body(fichaPacienteService.salvar(fichaPacienteModel));
   }

@@ -1,6 +1,8 @@
 package com.api.fichapaciente.services;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -24,5 +26,9 @@ public class PlanoSaudeService {
   @Transactional
   public PlanoDeSaudeModel salvar(PlanoDeSaudeModel planoDeSaudeModel){
     return planoSaudeRespository.save(planoDeSaudeModel);
+  }
+
+  public Optional<PlanoDeSaudeModel> findById(UUID id) {
+    return planoSaudeRespository.findById(id);
   }
 }

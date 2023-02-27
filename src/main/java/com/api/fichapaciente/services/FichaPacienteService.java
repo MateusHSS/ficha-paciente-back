@@ -1,10 +1,12 @@
 package com.api.fichapaciente.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.api.fichapaciente.models.FichaPacienteModel;
+import com.api.fichapaciente.models.FichaPacientePK;
 import com.api.fichapaciente.repositories.FichaPacienteRepository;
 
 @Service
@@ -23,4 +25,7 @@ public class FichaPacienteService {
     return fichaPacienteRepository.save(fichaPacienteModel);
   }
   
+  public Optional<FichaPacienteModel> findById(FichaPacientePK id) {
+    return fichaPacienteRepository.findById(id);
+  }
 }
