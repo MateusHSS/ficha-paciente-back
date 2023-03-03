@@ -3,6 +3,7 @@ package com.api.fichapaciente.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.api.fichapaciente.models.FichaPacienteModel;
@@ -19,6 +20,10 @@ public class FichaPacienteService {
 
   public List<FichaPacienteModel> findAll() {
     return fichaPacienteRepository.findAll();
+  }
+
+  public List<FichaPacienteModel> findAll(Example<FichaPacienteModel> fichaPacienteExample) {
+    return fichaPacienteRepository.findAll(fichaPacienteExample);
   }
 
   public FichaPacienteModel salvar(FichaPacienteModel fichaPacienteModel) {

@@ -1,7 +1,5 @@
 package com.api.fichapaciente.models;
 
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -13,29 +11,29 @@ import javax.persistence.Table;
 public class FichaPacienteModel {
   
   @EmbeddedId
-  FichaPacientePK id;
+  FichaPacientePK pk;
 
   public String getNumeroCarteiraPlano() {
-    return id.getNumeroCarteiraPlano();
+    return pk.getNumeroCarteiraPlano();
   }
 
-  public UUID getIdEspecialidade() {
-    return id.getEspecialidade().getId();
+  public EspecialidadeModel getEspecialidade() {
+    return pk.getEspecialidade();
   }
 
-  public UUID getIdPlanoSaude() {
-    return id.getPlanoSaude().getId();
+  public PlanoDeSaudeModel getPlanoSaude() {
+    return pk.getPlanoSaude();
   }
 
-  public void setId(FichaPacientePK id) {
-    this.id = id;
+  public void setPk(FichaPacientePK pk) {
+    this.pk = pk;
   }
 
   @Column(nullable = false, length = 100)
   private String nomePaciente;
 
   public FichaPacienteModel(FichaPacientePK fichaPacientePK, String nomePaciente) {
-    this.id = fichaPacientePK;
+    this.pk = fichaPacientePK;
     this.nomePaciente = nomePaciente;
   }
 
