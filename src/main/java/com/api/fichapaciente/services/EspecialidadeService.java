@@ -32,4 +32,8 @@ public class EspecialidadeService {
     return especialidadeRepository.findById(id);
   }
 
+  public void deleteEspecialidade(EspecialidadeModel especialidadeModel) {
+    especialidadeRepository.delete(especialidadeModel);
+  }
+
 }
