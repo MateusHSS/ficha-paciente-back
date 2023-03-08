@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.api.fichapaciente.dtos.EspecialidadeDto;
 import com.api.fichapaciente.dtos.EspecialidadeUpdateDto;
@@ -62,28 +64,40 @@ public class EspecialidadeController {
 
   @PatchMapping("/{id}")
   public ResponseEntity<Object> updateEspecialidade(@PathVariable(name = "id") String id, @RequestBody EspecialidadeUpdateDto especialidadeUpdateDto) {
-    Optional<EspecialidadeModel> especialidadeModelOptional = especialidadeService.findById(UUID.fromString(id));
+    try {
+      Optional<EspecialidadeModel> especialidadeModelOptional = especialidadeService.findById(UUID.fromString(id));
     
-    if(!especialidadeModelOptional.isPresent()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Especialidade não encontrada");
-    }
-    
-    var especialidadeModel = new EspecialidadeModel();
-    BeanUtils.copyProperties(especialidadeModelOptional.get(), especialidadeModel);
-    especialidadeModel.setNome(especialidadeUpdateDto.getNome());
+      if(!especialidadeModelOptional.isPresent()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Especialidade não encontrada");
+      }
+      
+      var especialidadeModel = new EspecialidadeModel();
+      BeanUtils.copyProperties(especialidadeModelOptional.get(), especialidadeModel);
+      especialidadeModel.setNome(especialidadeUpdateDto.getNome());
 
-    return ResponseEntity.status(HttpStatus.OK).body(especialidadeService.salvar(especialidadeModel));
+      return ResponseEntity.status(HttpStatus.OK).body(especialidadeService.salvar(especialidadeModel));
+    } catch (Exception exc) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exc);
+    }
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Object> deleteEspecialidade(@PathVariable(name = "id") String id) {
-    Optional<EspecialidadeModel> especialidadeModelOptional = especialidadeService.findById(UUID.fromString(id));
+  public ResponseEntity<Object> deleteEspecialidade(@PathVariable(name = "id") String id) throws ResponseStatusException {
+    try {
+      Optional<EspecialidadeModel> especialidadeModelOptional = especialidadeService.findById(UUID.fromString(id));
 
-    if(!especialidadeModelOptional.isPresent()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Especialidade não encontrada");
+      if(!especialidadeModelOptional.isPresent()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Especialidade não encontrada");
+      }
+
+      especialidadeService.deleteEspecialidade(especialidadeModelOptional.get());
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }catch(Exception exc) {
+      if(exc instanceof DataIntegrityViolationException) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Existe uma ficha de paciente cadastrada para essa especialidade");
+      }else {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exc);
+      }
     }
-
-    especialidadeService.deleteEspecialidade(especialidadeModelOptional.get());
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
   }
 }
