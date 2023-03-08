@@ -31,4 +31,8 @@ public class PlanoSaudeService {
   public Optional<PlanoDeSaudeModel> findById(UUID id) {
     return planoSaudeRespository.findById(id);
   }
+
+  public void deletePlanoSaude(PlanoDeSaudeModel planoDeSaudeModel) {
+    planoSaudeRespository.delete(planoDeSaudeModel);
+  }
 }
