@@ -1,0 +1,447 @@
+openapi: 3.0.0
+info:
+  title: Ficha pacientes
+  description: API de gerenciamento de fichas de pacientes
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/
+    description: Servidor local
+paths:
+  /plano-saude:
+    get:
+      summary: Retorna os planos de saúde cadastrados.
+      responses:
+        "200":
+          description: Array de planos de saúde cadastrados no sistema
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    nome:
+                      type: string
+    post:
+      summary: Cria um novo registro de plano de saúde
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+      responses:
+        "201":
+          description: Objeto do novo plano de saúde cadastrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  nome:
+                    type: string
+  /plano-saude/{id}:
+    get:
+      summary: Retorna os dados de um plano de saúde.
+      responses:
+        "200":
+          description: Objeto com os dados do plano de saúde
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  nome:
+                    type: string
+        "404":
+          description: Plano de saúde não encontrado
+          content:
+            application/json:
+              schema:
+                type: string
+
+    patch:
+      summary: Atualiza um registro de plano de saúde
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: UUID do plano de saúde
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+      responses:
+        "200":
+          description: "Objeto do registro atualizado do plano de saúde"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  nome:
+                    type: string
+        "404":
+          description: "Plano de saúde não encontrado"
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      summary: Deleta um plano de saúde
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: UUID do plano de saúde
+      responses:
+        "204":
+          description: Plano de saúde deletado com sucesso
+        "400":
+          description: Plano de saúde pertence a uma ficha cadastrada
+          content:
+            application/json:
+              schema:
+                type: string
+        "404":
+          description: "Plano de saúde não encontrado"
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /especialidade:
+    get:
+      summary: Retorna as especialidades cadastradas.
+      responses:
+        "200":
+          description: Array de planos de saúde cadastrados no sistema
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    nome:
+                      type: string
+    post:
+      summary: Cria um novo registro de especialidade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+      responses:
+        "201":
+          description: Objeto da nova especialidade cadastrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  nome:
+                    type: string
+  /especialidade/{id}:
+    get:
+      summary: Retorna os dados de uma especialidade.
+      responses:
+        "200":
+          description: Objeto com os dados da especialidade
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  nome:
+                    type: string
+        "404":
+          description: Especialidade não encontrada
+          content:
+            application/json:
+              schema:
+                type: string
+
+    patch:
+      summary: Atualiza um registro de especialidade
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: UUID da especialidade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+      responses:
+        "200":
+          description: "Objeto do registro atualizado da especialidade"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  nome:
+                    type: string
+        "404":
+          description: "Especialidade não encontrada"
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      summary: Deleta uma especialidade
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: UUID da especialidade
+      responses:
+        "204":
+          description: Especialidade deletada com sucesso
+        "400":
+          description: Especialidade pertence a uma ficha cadastrada
+          content:
+            application/json:
+              schema:
+                type: string
+        "404":
+          description: "Especialidade não encontrada"
+          content:
+            application/json:
+              schema:
+                type: string
+  /ficha-paciente:
+    get:
+      summary: Retorna a lista de fichas de paciente cadastradas.
+      responses:
+        "200":
+          description: Um array com as fichas cadastradas no sistema
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    numeroCarteiraPlano:
+                      type: string
+                    idEspecialidade:
+                      type: string
+                    idPlanoSaude:
+                      type: string
+                    nomePaciente:
+                      type: string
+    post:
+      summary: Cria um novo registro de ficha de paciente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nomePaciente:
+                  type: string
+                numeroCarteiraPlano:
+                  type: string
+                idEspecialidade:
+                  type: string
+                idPlanoSaude:
+                  type: string
+      responses:
+        "200":
+          description: Um array com as fichas de pacientes cadastradas no sistema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nomePaciente:
+                    type: string
+                  idEspecialidade:
+                    type: string
+                  idPlanoSaude:
+                    type: string
+                  numeroCarteiraPlano:
+                    type: string
+        "409":
+          description: Conflito ao tentar cadastrar uma nova ficha
+          content:
+            application/json:
+              schema:
+                type: string
+        "404":
+          description: Erro ao localizar especialidade ou plano de saúde
+          content:
+            application/json:
+              schema:
+                type: string
+  /ficha-paciente/{numeroCarteiraPlano}/{idEspecialidade}/{idPlanoSaude}:
+    get:
+      summary: Retorna os dados de uma ficha.
+      responses:
+        "200":
+          description: Objeto com os dados da ficha
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nomePaciente:
+                    type: string
+                  numeroCarteiraPlano:
+                    type: string
+                  especialidade:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      nome:
+                        type: string
+                  planoSaude:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      nome:
+                        type: string
+        "404":
+          description: Especialidade, plano de saúde ou ficha não encontrada
+          content:
+            application/json:
+              schema:
+                type: string
+    patch:
+      summary: Atualiza um registro de ficha
+      parameters:
+        - in: path
+          name: numeroCarteiraPlano
+          required: true
+          schema:
+            type: string
+          description: Número da carteira do plano de saúde cadastrada na ficha
+        - in: path
+          name: idEspecialidade
+          required: true
+          schema:
+            type: string
+          description: UUID da especialidade cadastrada na ficha
+        - in: path
+          name: idPlanoSaude
+          required: true
+          schema:
+            type: string
+          description: UUID do plano de saúde cadastrado na ficha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nomePaciente:
+                  type: string
+      responses:
+        "200":
+          description: "Objeto do registro atualizado da ficha"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nomePaciente:
+                    type: string
+                  numeroCarteiraPlano:
+                    type: string
+                  especialidade:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      nome:
+                        type: string
+                  planoSaude:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      nome:
+                        type: string
+        "404":
+          description: "Especialidade, plano de saúde ou ficha não encontrada"
+          content:
+            application/json:
+              schema:
+                type: string
+    delete:
+      summary: Deleta uma ficha
+      parameters:
+        - in: path
+          name: numeroCarteiraPlano
+          required: true
+          schema:
+            type: string
+          description: Número da carteira do plano de saúde cadastrada na ficha
+        - in: path
+          name: idEspecialidade
+          required: true
+          schema:
+            type: string
+          description: UUID da especialidade cadastrada na ficha
+        - in: path
+          name: idPlanoSaude
+          required: true
+          schema:
+            type: string
+          description: UUID do plano de saúde cadastrado na ficha
+      responses:
+        "204":
+          description: Ficha deletada com sucesso
+        "404":
+          description: "Ficha não encontrada"
+          content:
+            application/json:
+              schema:
+                type: string
