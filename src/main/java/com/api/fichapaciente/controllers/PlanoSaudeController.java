@@ -40,6 +40,17 @@ public class PlanoSaudeController {
     return ResponseEntity.status(HttpStatus.OK).body(planoSaudeService.findAll());
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<Object> getById(@PathVariable(name = "id") String id) {
+    Optional<PlanoDeSaudeModel> planoSaudeModelOptional = planoSaudeService.findById(UUID.fromString(id));
+
+    if(!planoSaudeModelOptional.isPresent()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plano de saúde não encontrado");
+    }
+
+    return ResponseEntity.status(HttpStatus.OK).body(planoSaudeModelOptional.get());
+  }
+
   @PostMapping
   public ResponseEntity<Object> salvar(@RequestBody @Valid PlanoSaudeDto planoSaudeDto) {
     var planoDeSaudeModel = new PlanoDeSaudeModel();
