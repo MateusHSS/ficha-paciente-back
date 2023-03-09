@@ -33,4 +33,8 @@ public class FichaPacienteService {
   public Optional<FichaPacienteModel> findById(FichaPacientePK id) {
     return fichaPacienteRepository.findById(id);
   }
+
+  public void deleteFichaPaciente(FichaPacienteModel fichaPaciente) {
+    fichaPacienteRepository.delete(fichaPaciente);
+  }
 }

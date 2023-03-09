@@ -11,6 +11,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -127,6 +128,31 @@ public class FichaPacienteController {
     fichaPaciente.setNomePaciente(fichaPacienteUpdateDto.getNomePaciente());
 
     return ResponseEntity.status(HttpStatus.OK).body(fichaPacienteService.salvar(fichaPaciente));
+  }
+
+  @DeleteMapping("/{numeroCarteiraPlano}/{idEspecialidade}/{idPlanoSaude}")
+  public ResponseEntity<Object> deleteFichaPaciente(@PathVariable(name = "numeroCarteiraPlano") String numeroCarteiraPlano, @PathVariable(name = "idEspecialidade") String idEspecialidade, @PathVariable(name = "idPlanoSaude") String idPlanoSaude) {
+    Optional<EspecialidadeModel> especialidadeModelOptional = especialidadeService.findById(UUID.fromString(idEspecialidade));
+
+    if(!especialidadeModelOptional.isPresent()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Especialidade não encontrada");
+    }
+
+    Optional<PlanoDeSaudeModel> planoSaudeModelOptional = planoSaudeService.findById(UUID.fromString(idPlanoSaude));
+
+    if(!planoSaudeModelOptional.isPresent()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Plano de saúde não encontrado");
+    }
+
+    Optional<FichaPacienteModel> fichaPacienteModelOptional = fichaPacienteService.findById(new FichaPacientePK(numeroCarteiraPlano, especialidadeModelOptional.get(), planoSaudeModelOptional.get()));
+
+    if(!fichaPacienteModelOptional.isPresent()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ficha não encontrada");
+    }
+
+    fichaPacienteService.deleteFichaPaciente(fichaPacienteModelOptional.get());
+
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
   }
 }
  
