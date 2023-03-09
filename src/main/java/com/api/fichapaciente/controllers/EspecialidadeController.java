@@ -92,7 +92,7 @@ public class EspecialidadeController {
 
       especialidadeService.deleteEspecialidade(especialidadeModelOptional.get());
       return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-    }catch(Exception exc) {
+    } catch(Exception exc) {
       if(exc instanceof DataIntegrityViolationException) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Existe uma ficha de paciente cadastrada para essa especialidade");
       }else {
